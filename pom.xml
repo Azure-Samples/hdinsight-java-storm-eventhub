@@ -4,22 +4,22 @@
   <groupId>com.microsoft.example</groupId>
   <artifactId>EventHubExample</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1-SNAPSHOT</version>
   <name>EventHubExample</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
       <groupId>org.apache.storm</groupId>
       <artifactId>storm-core</artifactId>
-      <version>0.9.3</version>
+      <version>0.10.0</version>
       <!-- keep storm out of the jar-with-dependencies -->
       <scope>provided</scope>
     </dependency>
     <!--For working with Event Hubs-->
     <dependency>
-      <groupId>com.microsoft.eventhubs</groupId>
-      <artifactId>eventhubs-storm-spout</artifactId>
-      <version>0.9.4</version>
+      <groupId>org.apache.storm</groupId>
+      <artifactId>storm-eventhubs</artifactId>
+      <version>0.10.0</version>
     </dependency>
     <!--HdfsBolt stuff -->
     <dependency>
@@ -35,47 +35,34 @@
           <artifactId>hadoop-hdfs</artifactId>
         </exclusion>
       </exclusions>
-      <version>0.9.3</version>
+      <version>0.10.0</version>
     </dependency>
-    <!--
-   This is a temporary workaround to make HdfsBolt work with WASB through hadoop-azure project.
-   For now, we have to build hadoop-client, hadoop-hdfs and hadoop-azure from Hadoop trunk
-   (which defaults to 3.0.0-SNAPSHOT version). And push those jars and dependencies to local
-   mvn repo (take a look at push_lib_mvn.ps1).
-
-   Once Hadoop 2.7 is released, we can just switch to that version.
-   Note that hadoop-azure is added to Hadoop on Hadoop 2.7.
-   -->
+   <!--So HdfsBolt knows how to talk to WASB -->
    <dependency>
      <groupId>org.apache.hadoop</groupId>
      <artifactId>hadoop-client</artifactId>
-     <version>3.0.0-SNAPSHOT</version>
+     <version>2.7.1</version>
    </dependency>
    <dependency>
      <groupId>org.apache.hadoop</groupId>
      <artifactId>hadoop-hdfs</artifactId>
-     <version>3.0.0-SNAPSHOT</version>
+     <version>2.7.1</version>
    </dependency>
    <dependency>
      <groupId>org.apache.hadoop</groupId>
      <artifactId>hadoop-azure</artifactId>
-     <version>3.0.0-SNAPSHOT</version>
+     <version>2.7.1</version>
    </dependency>
    <dependency>
      <groupId>org.apache.hadoop</groupId>
      <artifactId>hadoop-common</artifactId>
-     <version>3.0.0-SNAPSHOT</version>
+     <version>2.7.1</version>
      <exclusions>
        <exclusion>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-log4j12</artifactId>
        </exclusion>
      </exclusions>
-   </dependency>
-   <dependency>
-     <groupId>com.microsoft.windowsazure.storage</groupId>
-     <artifactId>microsoft-windowsazure-storage-sdk</artifactId>
-     <version>0.6.0</version>
    </dependency>
    <!-- For working with JSON -->
    <dependency>
@@ -102,10 +89,11 @@
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.3</version>
         <configuration>
-          <!-- Keep us from getting a can't overwrite file error -->
           <transformers>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer">
-            </transformer>
+            <!-- Keep us from getting a can't overwrite file error -->
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
+            <!-- Keep us from getting errors when trying to use WASB from the storm-hdfs bolt -->
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
           </transformers>
           <!-- Keep us from getting a bad signature error -->
           <filters>

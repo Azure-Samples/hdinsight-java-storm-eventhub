@@ -10,7 +10,7 @@ An example of how to read and write from Azure Event Hub using an Apache Storm t
 
 ##Prerequisites
 
-* An HDInsight cluster - either [Linux-based](hdinsight-apache-storm-tutorial-get-started-linux.md) or [Windows-based](hdinsight-apache-storm-tutorial-get-started.md)
+* A Storm on HDInsight cluster version 3.3 or 3.4 - either [Linux-based](hdinsight-apache-storm-tutorial-get-started-linux.md) or [Windows-based](hdinsight-apache-storm-tutorial-get-started.md). HDInsight clusters version 3.3 and 3.4 include Storm 0.10.0, which is required by this example. For a version of this example that works with older versions of HDInsight, see the [Storm_v0.9.3](https://github.com/Azure-Samples/hdinsight-java-storm-eventhub/tree/Storm_v0.9.3) branch of this repository.
 
 * [Azure EventHubs](../eventhubs/event-hubs-csharp-ephcs-getstarted.md)
 
@@ -59,28 +59,6 @@ The reason it's stored in JSON is compatibility - I recently ran into someone wh
 ##Confgure and build
 
 1. Fork & clone the repository so you have a local copy.
-
-2. Use the following to install a couple components from the /lib directory of this repo into your local Maven repository. These are required for communicating with Azure Event Hubs and the WASB storage used by HDInsight. Eventually these will be included in the Hadoop/Storm bits on Maven
-
-		mvn -q install:install-file -Dfile=lib/eventhubs/eventhubs-storm-spout-0.9.4-jar-with-dependencies.jar -DgroupId=com.microsoft.eventhubs -DartifactId=eventhubs-storm-spout -Dversion=0.9.4 -Dpackaging=jar
-
-		mvn -q org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=lib/hadoop/hadoop-azure-3.0.0-SNAPSHOT.jar
-
-		mvn -q org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=lib/hadoop/hadoop-client-3.0.0-SNAPSHOT.jar
-
-		mvn -q org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=lib/hadoop/hadoop-hdfs-3.0.0-SNAPSHOT.jar
-
-		mvn -q org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=lib/hadoop/hadoop-common-3.0.0-SNAPSHOT.jar -DpomFile=lib/hadoop/hadoop-common-3.0.0-SNAPSHOT.pom
-
-		mvn -q org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=lib/hadoop/hadoop-project-dist-3.0.0-SNAPSHOT.pom -DpomFile=lib/hadoop/hadoop-project-dist-3.0.0-SNAPSHOT.pom
-
-		mvn -q org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=lib/hadoop/hadoop-project-3.0.0-SNAPSHOT.pom -DpomFile=lib/hadoop/hadoop-project-3.0.0-SNAPSHOT.pom
-
-		mvn -q org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=lib/hadoop/hadoop-main-3.0.0-SNAPSHOT.pom -DpomFile=lib/hadoop/hadoop-main-3.0.0-SNAPSHOT.pom
-
-	NOTE: If you're using Powershell, you mau have to put the -Dfoo=bar parmeters in quotes. The whole thing; "-Dfoo=bar".
-
-	Also note that I got these files from https://github.com/hdinsight/hdinsight-storm-examples, so you should look there for the latest versions.
 
 2. Add the Event Hub configuration to the /conf/EventHubs.properties file. This is used to configure the spout that reads from Event Hub and the bolt that writes to it.
 

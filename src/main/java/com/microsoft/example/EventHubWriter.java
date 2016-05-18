@@ -10,8 +10,8 @@ import backtype.storm.tuple.Fields;
 import java.io.FileReader;
 import java.util.Properties;
 
-import com.microsoft.eventhubs.bolt.EventHubBolt;
-import com.microsoft.eventhubs.bolt.EventHubBoltConfig;
+import org.apache.storm.eventhubs.bolt.EventHubBolt;
+import org.apache.storm.eventhubs.bolt.EventHubBoltConfig;
 
 import com.microsoft.example.DeviceSpout;
 

@@ -21,8 +21,8 @@ import org.apache.storm.hdfs.bolt.sync.SyncPolicy;
 import java.io.FileReader;
 import java.util.Properties;
 
-import com.microsoft.eventhubs.spout.EventHubSpout;
-import com.microsoft.eventhubs.spout.EventHubSpoutConfig;
+import org.apache.storm.eventhubs.spout.EventHubSpout;
+import org.apache.storm.eventhubs.spout.EventHubSpoutConfig;
 
 public class EventHubReader {
   //Entry point for the topology
