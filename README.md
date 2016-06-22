@@ -210,3 +210,7 @@ Since the data is persisted to the default storage container, the new cluster **
 ##How real world is this?
 
 Since it's an example, there are some things that you might want to tweak. Noticably it has no error checking for someone putting bad data in Event Hub. It also has a size of 20kb for the files written to WASB storage. So I would recommend adding error checking and figuring out what the ideal file write size is for your scenario.
+
+## Project code of conduct
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
