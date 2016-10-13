@@ -10,11 +10,11 @@ An example of how to read and write from Azure Event Hub using an Apache Storm t
 
 ##Prerequisites
 
-* A Storm on HDInsight cluster version 3.3 or 3.4 - either [Linux-based](hdinsight-apache-storm-tutorial-get-started-linux.md) or [Windows-based](hdinsight-apache-storm-tutorial-get-started.md). HDInsight clusters version 3.3 and 3.4 include Storm 0.10.0, which is required by this example. For a version of this example that works with older versions of HDInsight, see the [Storm_v0.9.3](https://github.com/Azure-Samples/hdinsight-java-storm-eventhub/tree/Storm_v0.9.3) branch of this repository.
+* A Storm on HDInsight cluster version 3.5 - either [Linux-based](hdinsight-apache-storm-tutorial-get-started-linux.md) or [Windows-based](hdinsight-apache-storm-tutorial-get-started.md). HDInsight cluster version 3.5 include Storm 1.0.1, which is required by this example. For a version of this example that works with older versions of HDInsight, see the [Storm_v0.9.3](https://github.com/Azure-Samples/hdinsight-java-storm-eventhub/tree/Storm_v0.9.3) and [Storm_1.0.1](https://github.com/Azure-Samples/hdinsight-java-storm-eventhub/tree/Storm_1.0.1) branches of this repository.
 
 * [Azure EventHubs](../eventhubs/event-hubs-csharp-ephcs-getstarted.md)
 
-* [Oracle Java Developer Kit (JDK) version 7](https://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html) or an equivalent such as [OpenJDK](http://openjdk.java.net/)
+* [Oracle Java Developer Kit (JDK) version 8](https://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html) or an equivalent such as [OpenJDK](http://openjdk.java.net/)
 
 * [Maven](https://maven.apache.org/download.cgi)
 
@@ -76,9 +76,9 @@ The jar created by this project contains two topologies; __com.microsoft.example
 
 1. Use SCP to copy the jar package to your HDInsight cluster. Replace USERNAME with the SSH user for your cluster. Replace CLUSTERNAME with the name of your HDInsight cluster:
 
-        scp ./target/EventHubExample-1.0-SNAPSHOT.jar USERNAME@CLUSTERNAME-ssh.azurehdinsight.net:.
+        scp ./target/EventHubExample-1.0-SNAPSHOT.jar USERNAME@CLUSTERNAME-ssh.azurehdinsight.net:EventHubExample-1.0-SNAPSHOT.jar
 
-    If you used a password for your SSH account, you will be prompted to enter the password. If you used an SSH key with the account, you may need to use the `-i` parameter to specify the path to the key file. For example, `scp -i ~/.ssh/id_rsa ./target/EventHubExample-1.0-SNAPSHOT.jar USERNAME@CLUSTERNAME-ssh.azurehdinsight.net:.`.
+    If you used a password for your SSH account, you will be prompted to enter the password. If you used an SSH key with the account, you may need to use the `-i` parameter to specify the path to the key file. For example, `scp -i ~/.ssh/id_rsa ./target/EventHubExample-1.0-SNAPSHOT.jar USERNAME@CLUSTERNAME-ssh.azurehdinsight.net:EventHubExample-1.0-SNAPSHOT.jar`.
 
     If your client is a Windows workstation, you may not have an SCP command installed. I recommend PSCP, which can be downloaded from the [PuTTY download page](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html).
 
