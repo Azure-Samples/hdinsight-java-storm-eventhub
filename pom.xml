@@ -147,7 +147,7 @@
         <filtering>false</filtering>
         <includes>
           <include>EventHubs.properties</include>
-          <include>core-site.xml</include>
+          <!--<include>core-site.xml</include>-->
         </includes>
       </resource>
     </resources>
