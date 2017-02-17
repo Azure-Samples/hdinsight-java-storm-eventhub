@@ -10,7 +10,7 @@ An example of how to read and write from Azure Event Hub using an Apache Storm t
 
 ##Prerequisites
 
-* A Storm on HDInsight cluster version 3.5 - either [Linux-based](hdinsight-apache-storm-tutorial-get-started-linux.md) or [Windows-based](hdinsight-apache-storm-tutorial-get-started.md). HDInsight cluster version 3.5 include Storm 1.0.1, which is required by this example. For a version of this example that works with older versions of HDInsight, see the [Storm_v0.9.3](https://github.com/Azure-Samples/hdinsight-java-storm-eventhub/tree/Storm_v0.9.3) and [Storm_1.0.1](https://github.com/Azure-Samples/hdinsight-java-storm-eventhub/tree/Storm_1.0.1) branches of this repository.
+* A Storm on HDInsight cluster version 3.5. HDInsight cluster version 3.5 include Storm 1.0.1, which is required by this example. For a version of this example that works with older versions of HDInsight, see the [Storm_v0.9.3](https://github.com/Azure-Samples/hdinsight-java-storm-eventhub/tree/Storm_v0.9.3) and [Storm_0.10.0](https://github.com/Azure-Samples/hdinsight-java-storm-eventhub/tree/Storm_0.10.0) branches of this repository.
 
 * [Azure EventHubs](../eventhubs/event-hubs-csharp-ephcs-getstarted.md)
 
@@ -19,6 +19,8 @@ An example of how to read and write from Azure Event Hub using an Apache Storm t
 * [Maven](https://maven.apache.org/download.cgi)
 
 * A text editor or Java Integrated Development Environment (IDE)
+
+* The 1.0.2 EventHub Spout. This component can be downloaded from https://000aarperiscus.blob.core.windows.net/certs/storm-eventhubs-1.0.2-jar-with-dependencies.jar.
 
 ##How it works
 
@@ -56,6 +58,18 @@ The reason it's stored in JSON is compatibility - I recently ran into someone wh
     
     The container name is usually the same as the name of the cluster. If you used a different default container name when creating the cluster, use the value you specified.
 
+##Download and install the EventHub component
+
+1. Download the `storm-eventhubs-1.0.2-jar-with-dependencies.jar from [https://000aarperiscus.blob.core.windows.net/certs/storm-eventhubs-1.0.2-jar-with-dependencies.jar](https://000aarperiscus.blob.core.windows.net/certs/storm-eventhubs-1.0.2-jar-with-dependencies.jar). This file contains a spout and bolt component for reading and writing from EventHubs.
+
+2. Use the following command to register the components in your local maven repository:
+    
+        mvn install:install-file -Dfile=storm-eventhubs-1.0.2-jar-with-dependencies.jar -DgroupId=com.microsoft -DartifactId=eventhubs -Dversion=1.0.2 -Dpackaging=jar
+    
+    Modify the `-Dfile=` parameter to point to the downloaded file location.
+
+    This command installs the file in the local Maven repository, where it can be found at compile time by Maven.
+
 ##Confgure and build
 
 1. Fork & clone the repository so you have a local copy.
@@ -72,8 +86,6 @@ The reason it's stored in JSON is compatibility - I recently ran into someone wh
 
 The jar created by this project contains two topologies; __com.microsoft.example.EventHubWriter__ and __com.microsoft.example.EventHubReader__. The EventHubWriter topology should be started first, as it writes events in to Event Hub that are then read by the EventHubReader.
 
-###If using a Linux-based cluster
-
 1. Use SCP to copy the jar package to your HDInsight cluster. Replace USERNAME with the SSH user for your cluster. Replace CLUSTERNAME with the name of your HDInsight cluster:
 
         scp ./target/EventHubExample-1.0-SNAPSHOT.jar USERNAME@CLUSTERNAME-ssh.azurehdinsight.net:EventHubExample-1.0-SNAPSHOT.jar
@@ -84,7 +96,7 @@ The jar created by this project contains two topologies; __com.microsoft.example
 
     This command will copy the file to the home directory of your SSH user on the cluster.
 
-1. Once the file has finished uploading, use SSH to connect to the HDInsight cluster. Replace **USERNAME** the the name of your SSH login. Replace **CLUSTERNAME** with your HDInsight cluster name:
+2. Once the file has finished uploading, use SSH to connect to the HDInsight cluster. Replace **USERNAME** the the name of your SSH login. Replace **CLUSTERNAME** with your HDInsight cluster name:
 
         ssh USERNAME@CLUSTERNAME-ssh.azurehdinsight.net
 
@@ -100,14 +112,14 @@ The jar created by this project contains two topologies; __com.microsoft.example
     2. Click **Browse** and select the .ppk file that contains your private key.
     3. Click __Open__ to connect.
 
-2. Use the following command to start the topologies:
+3. Use the following command to start the topologies:
 
         storm jar EventHubExample-1.0-SNAPSHOT.jar com.microsoft.example.EventHubWriter writer
         storm jar EventHubExample-1.0-SNAPSHOT.jar com.microsoft.example.EventHubReader reader
 
     This will start the topologies and give them a friendly name of "reader" and "writer".
 
-3. Wait a minute or two to allow the topologies to write and read events from event hub, then use the following command to verify that the EventHubReader is storing data to your HDInsight storage:
+4. Wait a minute or two to allow the topologies to write and read events from event hub, then use the following command to verify that the EventHubReader is storing data to your HDInsight storage:
 
         hadoop fs -ls /devicedata
 
@@ -137,75 +149,10 @@ The jar created by this project contains two topologies; __com.microsoft.example
 
     The first column contains the device ID value and the second column is the device value.
 
-4. Use the following commands to stop the topologies:
+5. Use the following commands to stop the topologies:
 
         storm kill reader
         storm kill writer
-
-###If using a Windows-based cluster
-
-1. Open your browser to https://CLUSTERNAME.azurehdinsight.net. When prompted, enter the administrator credentials for your HDInsight cluster. You will arrive at the Storm Dashboard.
-
-2. Use the __Jar File__ dropdown to browse and select the EventHubExample-1.0-SNAPSHOT.jar file from your build environment.
-
-3. For __Class Name__, enter `com.mirosoft.example.EventHubWriter`.
-
-4. For __Additional Parameters__, enter `writer`. Finally, click __Submit__ to upload the jar and start the EventHubWriter topology.
-
-5. Once the topology has started, use the form to start the EventHubReader:
-
-    * __Jar File__: select the EventHubExample-1.0-SNAPSHOT.jar that was previously uploaded
-    * __Class Name__: enter `com.microsoft.example.EventHubReader`
-    * __Additional Parameters__: enter `reader`
-
-    Click submit to start the EventHubReader topology.
-
-6. Wait a few minutes to allow the topologies to generate events and store then to Azure Storage, then select the __Query Console__ tab at the top of the __Storm Dashboard__ page.
-
-7. On the __Query Console__, select __Hive Editor__ and replace the default `select * from hivesampletable` with the following:
-
-        create external table devicedata (deviceid string, devicevalue int) row format delimited fields terminated by ',' stored as textfile location 'wasb:///devicedata/';
-        select * from devicedata limit 10;
-
-    Click __Select__ to run the query. This will return 10 rows from the data written to Azure Storage (WASB) by the EventHubReader. Once the query completes, you should see data similar to the following:
-
-        3409e622-c85d-4d64-8622-af45e30bf774,848981614
-        c3305f7e-6948-4cce-89b0-d9fbc2330c36,-1638780537
-        788b9796-e2ab-49c4-91e3-bc5b6af1f07e,-1662107246
-        6403df8a-6495-402f-bca0-3244be67f225,275738503
-        d7c7f96c-581a-45b1-b66c-e32de6d47fce,543829859
-        9a692795-e6aa-4946-98c1-2de381b37593,1857409996
-        3c8d199b-0003-4a79-8d03-24e13bde7086,-1271260574
-
-8. Select the __Storm Dashboard__ at the top of the page, then select __Storm UI__. From the __Storm UI__, select the link for the __reader__ topology and then use the __Kill__ button to stop the topology. Repeat the process for the __writer__ topology.
-
-### Checkpointing
-
-The EventHubSpout periodically checkpoints its state to the Zookeeper node, which saves the current offset for messages read from the queue. This allows the component to start receiving messages at the saved offset in the following scenarios:
-
-* The component instance fails and is restarted.
-
-* You grow or shrink the cluster by adding or removing nodes.
-
-* The topology is killed and restarted **with the same name**.
-
-####On Windows-based HDInsight clusters
-
-You can export and import the persisted checkpoints to WASB (the Azure Storage used by your HDInsight cluster.) The scripts to do this are located on the Storm on HDInsight cluster, at **c:\apps\dist\storm-0.9.3.2.2.1.0-2340\zkdatatool-1.0\bin**.
-
-The version number in the path may be different, as the version of Storm installed on the cluster may change in the future.
-
-The scripts in this directory are:
-
-* **stormmeta_import.cmd**: Import all Storm metadata from the cluster default storage container into Zookeeper.
-
-* **stormmeta_export.cmd**: Export all Storm metadata from Zookeeper to the cluster default storage container.
-
-* **stormmeta_delete.cmd**: Delete all Storm metadata from Zookeeper.
-
-Export an import allows you to persist checkpoint data when you need to delete the cluster, but want to resume processing from the current offset in the hub when you bring a new cluster back online.
-
-Since the data is persisted to the default storage container, the new cluster **must** use the same storage account and container as the previous cluster.
 
 ##How real world is this?
 
