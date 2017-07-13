@@ -9,46 +9,19 @@
   <url>http://maven.apache.org</url>
   <repositories>
     <repository>
-      <releases>
-          <enabled>true</enabled>
-          <updatePolicy>always</updatePolicy>
-          <checksumPolicy>warn</checksumPolicy>
-      </releases>
-      <snapshots>
-          <enabled>false</enabled>
-          <updatePolicy>never</updatePolicy>
-          <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-      <id>HDPReleases</id>
-      <name>HDP Releases</name>
-      <url>http://repo.hortonworks.com/content/repositories/releases/</url>
-      <layout>default</layout>
-  </repository>
-  <repository>
-      <releases>
-          <enabled>true</enabled>
-          <updatePolicy>always</updatePolicy>
-          <checksumPolicy>warn</checksumPolicy>
-      </releases>
-      <snapshots>
-          <enabled>false</enabled>
-          <updatePolicy>never</updatePolicy>
-          <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-      <id>HDPJetty</id>
-      <name>Hadoop Jetty</name>
-      <url>http://repo.hortonworks.com/content/repositories/jetty-hadoop/</url>
-      <layout>default</layout>
+      <id>hdinsight-examples</id>
+      <url>http://raw.github.com/hdinsight/mvn-repo/master</url>
     </repository>
   </repositories>
   <properties>
     <!--
-    Storm 1.0.1 is for HDInsight 3.5.
+    Storm 1.1.0 is for HDInsight 3.6.
     To find the version information for earlier HDInsight cluster
     versions, see https://azure.microsoft.com/en-us/documentation/articles/hdinsight-component-versioning/
     -->
-    <storm.version>1.0.1.2.5.3.0-37</storm.version>
-    <hadoop.version>2.7.3.2.5.3.0-37</hadoop.version>
+    <storm.version>1.1.0</storm.version>
+    <hadoop.version>2.7.3</hadoop.version>
+    <storm.eventhub.version>1.1.0.1</storm.eventhub.version>
   </properties>
   <dependencies>
     <dependency>
@@ -58,17 +31,17 @@
       <!-- keep storm out of the jar-with-dependencies -->
       <scope>provided</scope>
     </dependency>
-    <!--For working with Event Hubs-->
-    <!--
-        This component can be downloaded from https://000aarperiscus.blob.core.windows.net/certs/storm-eventhubs-1.0.2-jar-with-dependencies.jar.
-
-        To register in your local maven repository, use the following command:
-        mvn install:install-file -Dfile=storm-eventhubs-1.0.2-jar-with-dependencies.jar -DgroupId=com.microsoft -DartifactId=eventhubs -Dversion=1.0.2 -Dpackaging=jar
-    -->
+    <!-- Flux, for YAML based topologies -->
     <dependency>
-      <groupId>com.microsoft</groupId>
-      <artifactId>eventhubs</artifactId>
-      <version>1.0.2</version>
+      <groupId>org.apache.storm</groupId>
+      <artifactId>flux-core</artifactId>
+      <version>${storm.version}</version>
+    </dependency>
+    <!--For working with Event Hubs-->
+    <dependency>
+      <groupId>org.apache.storm</groupId>
+      <artifactId>storm-eventhubs</artifactId>
+      <version>${storm.eventhub.version}</version>
     </dependency>
     <!-- dependenccy for hdfsbolt -->
     <dependency>
@@ -108,7 +81,7 @@
   </dependencies>
   <build>
     <plugins>
-      <!-- build for Java 1.8, which is what HDInsight 3.5 uses -->
+      <!-- build for Java 1.8, which is what HDInsight 3.5 and higher uses -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -151,37 +124,17 @@
           </execution>
         </executions>
       </plugin>
-      <!-- This is here so you can test locally,
-           which probably only works for the writer, since the
-           reader expects WASB access. -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
-        <executions>
-          <execution>
-          <goals>
-            <goal>exec</goal>
-          </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <executable>java</executable>
-          <includeProjectDependencies>true</includeProjectDependencies>
-          <includePluginDependencies>false</includePluginDependencies>
-          <classpathScope>compile</classpathScope>
-          <mainClass>${storm.topology}</mainClass>
-        </configuration>
-      </plugin>
     </plugins>
     <!-- Tell the project about the configuration files For
          Event Hub and the Azure Storage account -->
     <resources>
       <resource>
-        <directory>${basedir}/conf</directory>
+        <directory>${basedir}/resources</directory>
         <filtering>false</filtering>
         <includes>
-          <include>EventHubs.properties</include>
+          <include>reader.yaml</include>
+          <include>writer.yaml</include>
+          <include>log4j2.xml</include>
         </includes>
       </resource>
     </resources>
