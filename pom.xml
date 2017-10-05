@@ -21,7 +21,7 @@
     -->
     <storm.version>1.1.0</storm.version>
     <hadoop.version>2.7.3</hadoop.version>
-    <storm.eventhub.version>1.1.0.1</storm.eventhub.version>
+    <storm.eventhub.version>1.1.0.2</storm.eventhub.version>
   </properties>
   <dependencies>
     <dependency>
@@ -42,6 +42,35 @@
       <groupId>org.apache.storm</groupId>
       <artifactId>storm-eventhubs</artifactId>
       <version>${storm.eventhub.version}</version>
+    </dependency>
+    <!-- dependenccy for hdfsbolt -->
+    <dependency>
+        <groupId>org.apache.storm</groupId>
+        <artifactId>storm-hdfs</artifactId>
+        <!-- exclude these storm-hdfs dependencies since they are on the server -->
+        <exclusions>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-client</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-hdfs</artifactId>
+            </exclusion>
+        </exclusions>
+        <version>${storm.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-common</artifactId>
+        <version>${hadoop.version}</version>
+        <scope>provided</scope>
+        <exclusions>
+        <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        </exclusions>
     </dependency>
    <!-- For working with JSON -->
    <dependency>
@@ -104,6 +133,7 @@
         <filtering>false</filtering>
         <includes>
           <include>reader.yaml</include>
+          <include>readtofile.yaml</include>
           <include>writer.yaml</include>
           <include>log4j2.xml</include>
         </includes>

@@ -7,12 +7,9 @@ components:
   - id: "eventhubbolt-config"
     className: "org.apache.storm.eventhubs.bolt.EventHubBoltConfig"
     constructorArgs:
-      # These are populated from the .properties file when the topology is started
-      - "${eventhub.write.policy.name}"
-      - "${eventhub.write.policy.key}"
-      - "${eventhub.namespace}"
-      - "servicebus.windows.net"
-      - "${eventhub.name}"
+      # This is populated from the .properties file when the topology is started
+      - "${eventhub.write.connection}"
+      - ""
 
 spouts:
   - id: "device-emulator-spout"
