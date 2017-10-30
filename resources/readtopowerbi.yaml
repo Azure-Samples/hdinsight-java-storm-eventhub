@@ -1,0 +1,51 @@
+---
+# Topology that reads from Event Hubs
+name: "eventhubreader"
+
+components:
+  # Configure the Event Hub spout
+  - id: "eventhubspout-config"
+    className: "org.apache.storm.eventhubs.spout.EventHubSpoutConfig"
+    constructorArgs:
+      # These are populated from the .properties file when the topology is started
+      - "${eventhub.read.policy.name}"
+      - "${eventhub.read.policy.key}"
+      - "${eventhub.namespace}"
+      - "${eventhub.name}"
+      - ${eventhub.partitions}
+
+# Spout to read from eventhub
+spouts:
+  - id: "eventhub-spout"
+    className: "org.apache.storm.eventhubs.spout.EventHubSpout"
+    constructorArgs:
+      - ref: "eventhubspout-config" # config declared in components section
+    # parallelism hint. This should be the same as the number of partitions for your Event Hub, so we read it from the dev.properties file passed at run time.
+    parallelism: ${eventhub.partitions}
+
+bolts:
+  # Parses from JSON into tuples
+  - id: "parser-bolt"
+    className: "com.microsoft.example.ParserBolt"
+    parallelism: ${eventhub.partitions}
+
+  # Pushes data to a Power BI streaming API
+  - id: "powerbi-bolt"
+    className: "com.microsoft.example.PowerBIBolt"
+    constructorArgs: 
+      - "${powerbi.push.url}"
+    parallelism: 1
+
+# How data flows through the components
+streams:
+  - name: "spout -> parser" # just a string used for logging
+    from: "eventhub-spout"
+    to: "parser-bolt"
+    grouping:
+      type: SHUFFLE
+
+  - name: "parser -> powerbi"
+    from: "parser-bolt"
+    to: "powerbi-bolt"
+    grouping:
+      type: SHUFFLE

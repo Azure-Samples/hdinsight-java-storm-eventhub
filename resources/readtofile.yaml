@@ -21,12 +21,12 @@ components:
     constructorArgs:
       - 100
 
-  # Rotate files when they hit 1 MB
+  # Rotate files when they hit 5 KB
   - id: "rotationPolicy"
     className: "org.apache.storm.hdfs.bolt.rotation.FileSizeRotationPolicy"
     constructorArgs:
-      - 1
-      - "MB"
+      - 5
+      - "KB"
 
   # File format
   - id: "fileNameFormat"
@@ -54,11 +54,6 @@ spouts:
     parallelism: ${eventhub.partitions}
 
 bolts:
-  # Log information
-  - id: "log-bolt"
-    className: "org.apache.storm.flux.wrappers.bolts.LogInfoBolt"
-    parallelism: 1
-
   # HDFS bolt writes out to the HDFS-compatible file system for HDInsight
   - id: "hdfs-bolt"
     className: "org.apache.storm.hdfs.bolt.HdfsBolt"
