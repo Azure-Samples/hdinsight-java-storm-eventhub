@@ -131,9 +131,11 @@
       <resource>
         <directory>${basedir}/resources</directory>
         <filtering>false</filtering>
+        <!-- include the topology definitions & logging config -->
         <includes>
           <include>reader.yaml</include>
           <include>readtofile.yaml</include>
+          <include>readtopowerbi.yaml</include>
           <include>writer.yaml</include>
           <include>log4j2.xml</include>
         </includes>
