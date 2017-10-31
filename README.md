@@ -6,7 +6,7 @@ author: blackmist
 
 # Process events from Azure Event Hubs with Storm on HDInsight (Java)
 
-Learn how to use Azure Event Hubs with Storm on HDInsight. This example uses Java-based components to read and write data in Azure Event Hubs. It also demonstrates how to write data to the default storage for your cluster.
+Learn how to use Azure Event Hubs with Storm on HDInsight. This example uses Java-based components to read and write data in Azure Event Hubs. It also demonstrates how to write data to the default storage for your cluster, and how to send data to Power BI using the Power BI real-time streaming API.
 
 Note: This example is created and tested on HDInsight. It may work on other Hadoop distributions, but you will need to change things like the scheme used to store data to HDFS.
 
@@ -206,6 +206,13 @@ There isn't a pre-built Storm bolt for communicating with Power BI. However, Pow
     ```
 
 6. In Power BI, add some tiles to the dashboard and set the real-time streaming API as the source. Note that the values update as data is read by the topology.
+
+7. Use the following commands to stop the reader and writer topologies:
+
+    ```bash
+    storm kill eventhubreader
+    storm kill eventhubwriter
+    ```
 
 ## Project code of conduct
 
