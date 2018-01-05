@@ -142,7 +142,7 @@ By default, the components needed to write to WASB or ADL (the file schemes used
 
     * __Select a script__: Select __Custom__
     * __Name__: Enter a name for this script. This is how it will appear in the script history.
-    * __Bash script URI__: `https://000aarperiscus.blob.core.windows.net/certs/stormextlib.sh`
+    * __Bash script URI__: `https://hdiconfigactions.blob.core.windows.net/linuxstormextlibv01/stormextlib.sh`
     * __Node type(s)__: Select __Nimbus__ and __Supervisor__ node types.
     * __Parameters__: Leave this field blank.
     * __Persist__: Check this field.
